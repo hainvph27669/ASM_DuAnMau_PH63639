@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bắt đầu từ"/>
+    <EditText
+        android:id="@+id/edtStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn ngày bắt đầu"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đén ngày"/>
+    <EditText
+        android:id="@+id/edtEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Chọn ngày kết thúc"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnThongKe"
+        android:text="Thống kê"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1000vnd"
+        android:id="@+id/txtKQua"
+        android:textSize="24sp"
+        android:textColor="#FF0000"
+        android:layout_gravity="center"/>
+
+
+</LinearLayout>

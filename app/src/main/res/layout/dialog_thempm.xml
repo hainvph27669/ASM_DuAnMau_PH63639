@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:src="@drawable/avatar"
+        android:layout_margin="10sp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm phiếu mượn"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:textColor="#03A9F4"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thành viên"
+        android:textSize="20sp"
+        android:textColor="#ff00"
+        />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spnThanhVien"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sách"
+        android:textSize="20sp"
+        android:textColor="#ff00"
+        />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spnSach"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tiền Thuê Sách"
+        android:textSize="20sp"
+        android:textColor="#ff00"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nhập tiền"
+        android:id="@+id/edtTien"/>
+
+
+</LinearLayout>
