@@ -14,8 +14,18 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Chào mừng Vũ Duy Long"
-        android:textColor="#9C27B0"
+        android:text="Chào mừng "
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="30dp"
+        />
+    <TextView
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nguyễn Văn Hải"
+        android:textStyle="bold"
+        android:textColor="@color/black"
         android:textSize="30dp"
         />
 

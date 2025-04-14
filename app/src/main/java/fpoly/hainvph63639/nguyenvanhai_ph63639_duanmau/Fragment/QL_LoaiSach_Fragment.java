@@ -25,10 +25,11 @@ import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.R;
 public class QL_LoaiSach_Fragment extends Fragment {
     RecyclerView recyclerViewLS;
     LoaiSachDAO dao;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_q_l__loai_sach_,container,false);
+        View view = inflater.inflate(R.layout.fragment_q_l__loai_sach_, container, false);
 
         recyclerViewLS = view.findViewById(R.id.rcvLoaiSach);
         EditText edtLoaiSach = view.findViewById(R.id.edtLoaiSach);
@@ -46,10 +47,10 @@ public class QL_LoaiSach_Fragment extends Fragment {
             public void onClick(View v) {
                 String tenLoai = edtLoaiSach.getText().toString();
 
-                if(dao.themLoaiSach(tenLoai)){
+                if (dao.themLoaiSach(tenLoai)) {
                     loadData();
                     edtLoaiSach.setText("");
-                }else {
+                } else {
                     Toast.makeText(getContext(), "Thêm loại sách không thành công", Toast.LENGTH_SHORT).show();
                 }
 
@@ -58,12 +59,14 @@ public class QL_LoaiSach_Fragment extends Fragment {
         return view;
     }
 
-    private void loadData(){
+    private void loadData() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerViewLS.setLayoutManager(linearLayoutManager);
 
         ArrayList<LoaiSach> list = dao.getDSLoaiSach();
-        LoaiSachAdapter adapter =new LoaiSachAdapter(getContext(), list);
+        LoaiSachAdapter adapter = new LoaiSachAdapter(getContext(), list);
         recyclerViewLS.setAdapter(adapter);
 
     }
+
+}
