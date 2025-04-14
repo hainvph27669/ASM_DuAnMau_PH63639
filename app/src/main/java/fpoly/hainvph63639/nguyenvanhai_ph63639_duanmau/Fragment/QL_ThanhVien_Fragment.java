@@ -1,66 +1,101 @@
 package fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Adapter.ThanhVienAdapter;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.DAO.ThanhVienDAO;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Model.ThanhVien;
 import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link QL_ThanhVien_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class QL_ThanhVien_Fragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public QL_ThanhVien_Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment QL_ThanhVien_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static QL_ThanhVien_Fragment newInstance(String param1, String param2) {
-        QL_ThanhVien_Fragment fragment = new QL_ThanhVien_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    ThanhVienDAO thanhVienDAO;
+    RecyclerView recyclerThanhVien;
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_q_l__thanh_vien_
+                ,container,false);
+
+        recyclerThanhVien = view.findViewById(R.id.recThanhVien);
+        FloatingActionButton floatAdd = view.findViewById(R.id.floatAdd);
+
+        thanhVienDAO = new ThanhVienDAO(getContext());
+
+        loadData();
+
+        floatAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+        return view;
+
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_q_l__thanh_vien_, container, false);
+    private void loadData(){
+        ArrayList<ThanhVien> list = thanhVienDAO.getDSThanhVien();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerThanhVien.setLayoutManager(linearLayoutManager);
+        ThanhVienAdapter adapter = new ThanhVienAdapter(getContext(),list, thanhVienDAO);
+        recyclerThanhVien.setAdapter(adapter);
+
     }
+
+    private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_themtv,null);
+        builder.setView(view);
+
+        EditText edtHoten = view.findViewById(R.id.edtHotentv);
+        EditText edtNamsinh = view.findViewById(R.id.edtNamsinhtv);
+
+        builder.setNegativeButton("Thêm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String hoten = edtHoten.getText().toString();
+                String namsinh = edtNamsinh.getText().toString();
+
+                boolean check = thanhVienDAO.themThanhvien(hoten,namsinh);
+                if(check){
+                    Toast.makeText(getContext(), "Thêm thành công", Toast.LENGTH_SHORT).show();
+                    loadData();
+
+                }else{
+                    Toast.makeText(getContext(), "Thêm thất bại", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        builder.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 }
