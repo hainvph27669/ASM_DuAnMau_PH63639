@@ -1,66 +1,40 @@
 package fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Adapter.Top10Adapter;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.DAO.ThongKeDAO;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Model.Sach;
 import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ThongKeTop10_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ThongKeTop10_Fragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public ThongKeTop10_Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ThongKeTop10_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ThongKeTop10_Fragment newInstance(String param1, String param2) {
-        ThongKeTop10_Fragment fragment = new ThongKeTop10_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_thong_ke_top10_,container,false);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_thong_ke_top10_, container, false);
+        RecyclerView recyclerViewTop10 = view.findViewById(R.id.rcvTop10);
+
+        ThongKeDAO thongKeDAO = new ThongKeDAO(getContext());
+        ArrayList<Sach> list = thongKeDAO.getTop10();
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerViewTop10.setLayoutManager(linearLayoutManager);
+        Top10Adapter adapter = new Top10Adapter(getContext(),list);
+        recyclerViewTop10.setAdapter(adapter);
+
+        return view;
     }
 }

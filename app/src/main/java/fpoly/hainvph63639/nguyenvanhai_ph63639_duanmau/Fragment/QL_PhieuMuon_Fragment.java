@@ -1,66 +1,169 @@
 package fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Fragment;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Adapter.PhieuMuonAdapter;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.DAO.PhieuMuonDAO;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.DAO.SachDAO;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.DAO.ThanhVienDAO;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Model.PhieuMuon;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Model.Sach;
+import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.Model.ThanhVien;
 import fpoly.hainvph63639.nguyenvanhai_ph63639_duanmau.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link QL_PhieuMuon_Fragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class QL_PhieuMuon_Fragment extends Fragment {
+    PhieuMuonDAO phieuMuonDAO;
+    RecyclerView recyclerViewQLPM;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public QL_PhieuMuon_Fragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment QL_PhieuMuon_Fragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static QL_PhieuMuon_Fragment newInstance(String param1, String param2) {
-        QL_PhieuMuon_Fragment fragment = new QL_PhieuMuon_Fragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    ArrayList<PhieuMuon> list;
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_q_l__phieu_muon_,container,false);
+        recyclerViewQLPM = view.findViewById(R.id.rcvQLPM);
+        FloatingActionButton floatAdd = view.findViewById(R.id.floatAdd);
+
+        //giao diện
+
+        //data
+
+        //adapter
+
+        loaddata();
+
+
+        floatAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+        return view;
+    }
+
+    private void loaddata(){
+        phieuMuonDAO = new PhieuMuonDAO(getContext());
+        list = phieuMuonDAO.getDSPM();
+        LinearLayoutManager linearLayoutManager =new LinearLayoutManager(getContext());
+        recyclerViewQLPM.setLayoutManager(linearLayoutManager);
+        PhieuMuonAdapter adapter = new PhieuMuonAdapter(list, getContext());
+        recyclerViewQLPM.setAdapter(adapter);
+    }
+    private void showDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_thempm,null);
+        Spinner spnThanhVien = view.findViewById(R.id.spnThanhVien);
+        Spinner spnSach = view.findViewById(R.id.spnSach);
+        EditText edtTien = view.findViewById(R.id.edtTien);
+        getDataThanhVien(spnThanhVien);
+        getDataSach(spnSach);
+        builder.setView(view);
+
+        builder.setPositiveButton("Thêm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                HashMap<String , Object> hsTV = (HashMap<String , Object>)  spnThanhVien.getSelectedItem();
+                int matv = (int) hsTV.get("matv");
+
+                HashMap<String,Object> hsSach = (HashMap<String,Object>) spnSach.getSelectedItem();
+                int masach = (int) hsSach.get("masach");
+
+                int tien = Integer.parseInt(edtTien.getText().toString());
+                themPM(matv,masach,tien);
+            }
+        });
+
+        builder.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void getDataThanhVien(Spinner spnThanhVien){
+        ThanhVienDAO thanhVienDAO = new ThanhVienDAO(getContext());
+        ArrayList<ThanhVien> list = thanhVienDAO.getDSThanhVien();
+
+        ArrayList<HashMap<String, Object>> listHM = new ArrayList<>();
+        for(ThanhVien tv : list){
+            HashMap<String , Object> hs = new HashMap<>();
+            hs.put("matv",tv.getMatv());
+            hs.put("hoten", tv.getHoten());
+            listHM.add(hs);
         }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(),listHM, android.R.layout.simple_list_item_1,
+                new String[]{"hoten"},new int[]{android.R.id.text1});
+        spnThanhVien.setAdapter(simpleAdapter);
+
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_q_l__phieu_muon_, container, false);
+    private void getDataSach(Spinner spnSach){
+        SachDAO sachDAO = new SachDAO(getContext());
+        ArrayList<Sach> list = sachDAO.getDSDauSach();
+
+        ArrayList<HashMap<String, Object>> listHM = new ArrayList<>();
+        for(Sach sc : list){
+            HashMap<String , Object> hs = new HashMap<>();
+            hs.put("masach",sc.getMasach());
+            hs.put("tensach", sc.getTensach());
+            listHM.add(hs);
+        }
+
+        SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(),listHM, android.R.layout.simple_list_item_1,
+                new String[]{"tensach"},new int[]{android.R.id.text1});
+        spnSach.setAdapter(simpleAdapter);
+
+    }
+
+    private void themPM(int matv, int masach, int tien){
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences("THONGTIN", Context.MODE_PRIVATE);
+        String matt = sharedPreferences.getString("matt","");
+
+        Date currenTime = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        String ngay = simpleDateFormat.format(currenTime);
+
+        PhieuMuon phieuMuon = new PhieuMuon(matv,matt,masach,ngay,0,tien);
+        boolean kiemtra = phieuMuonDAO.themPM(phieuMuon);
+        if(kiemtra){
+            Toast.makeText(getContext(), "Thêm phiếu mượn thành công", Toast.LENGTH_SHORT).show();
+            loaddata();
+        }else {
+            Toast.makeText(getContext(), "Thêm phiếu mượn thất bại", Toast.LENGTH_SHORT).show();
+        }
     }
 }
